@@ -29,19 +29,22 @@ void JsonNetworkManager::sendRequest(HttpManager::Method method,
         QJsonDocument doc(json);
         QString strJson = doc.toJson(QJsonDocument::Indented);
         qDebug() << "**** Response in JSON:";
-        qDebug().noquote() << QString::fromUtf8(strJson.toStdString().c_str());
+        qDebug().noquote() << "****" << QString::fromUtf8(strJson.toStdString().c_str());
 
         // Check JSON parse error
         if (parseError.error != QJsonParseError::NoError) {
             QString errorString = parseError.errorString();
-            qWarning() << "Json parse error. replyText:" << data
+            qWarning() << "**** Json parse error. replyText:" << data
                        << "errorString:" << errorString;
 
-            onErrorCallback(errorString);
+            onErrorCallback(QNetworkReply::NetworkError::NoError, 0, errorString);
             return;
         }
 
-        onCompleteCallback(json, headerPairs);
+        // Convert json to QVariantMap
+        QVariantMap reply = json.toVariantMap();
+
+        onCompleteCallback(reply, headerPairs);
     };
 
     QByteArray jsonData = JsonConverter::qVariantMapToJson(data);

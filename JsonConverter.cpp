@@ -14,7 +14,7 @@ QByteArray qVariantMapToJson(QVariantMap map)
     return jsonData;
 }
 
-QVariantMap jsonToQVariantMap(const QByteArray &jsonData)
+QVariantMap jsonToVariantMap(const QByteArray &jsonData)
 {
     QJsonDocument jsonDocument = QJsonDocument::fromJson(jsonData);
     QVariantMap map = jsonDocument.toVariant().toMap();

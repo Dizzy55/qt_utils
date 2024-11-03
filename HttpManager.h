@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include <QObject>
 #include <QString>
 #include <QVector>
@@ -24,7 +26,7 @@ public:
     Q_ENUM(Method)
 
     using completeFunctionType = std::function<void(const QByteArray &, const QList<QNetworkReply::RawHeaderPair> &)>;
-    using errorFunctionType = std::function<void(const QString &)>;
+    using errorFunctionType = std::function<void(QNetworkReply::NetworkError, int, const QString &)>;
 
 public:
     explicit HttpManager(const QString &host,

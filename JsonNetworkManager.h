@@ -1,12 +1,17 @@
 #pragma once
 
+#include <functional>
+
 #include "HttpManager.h"
 
 class JsonNetworkManager
 {
 public:
-    using completeFunctionType = std::function<void(const QJsonObject &, const QList<QNetworkReply::RawHeaderPair> &)>;
-    using errorFunctionType = std::function<void(const QString &)>;
+    using completeFunctionType = std::function<void(const QVariantMap &,
+                                                    const QList<QPair<QByteArray, QByteArray>> &)>;
+    using errorFunctionType = std::function<void(QNetworkReply::NetworkError,
+                                                 int,
+                                                 const QString &)>;
 
 public:
     explicit JsonNetworkManager(const QString &host,

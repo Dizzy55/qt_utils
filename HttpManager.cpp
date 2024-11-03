@@ -100,10 +100,13 @@ void HttpManager::sendRequest(Method method,
         } else {
             QString errorString = getHttpErrorString(reply);
 
+            QNetworkReply::NetworkError replyError = reply->error();
+            int httpCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+
             qWarning() << "**** Reply error:" << errorString;
 
             if (onErrorCallback != nullptr)
-                onErrorCallback(errorString);
+                onErrorCallback(replyError, httpCode, errorString);
         }
 
         reply->close();
@@ -130,9 +133,9 @@ QString HttpManager::getHttpErrorString(QNetworkReply *reply) const
         // proxy errors (101-199):
         // ...
         // content errors (201-299):
-        // ...
-        // protocol errors
-        // ...
+        {QNetworkReply::ContentNotFoundError, tr("Content not found")},     // 203
+        // protocol errors (301-399)
+        {QNetworkReply::ProtocolInvalidOperationError, tr("Protocol invalid operation")}, // 302
         // Server side errors (401-499)
         {QNetworkReply::InternalServerError, tr("Internal server error")},  // 401
     };
@@ -207,7 +210,7 @@ QNetworkReply *HttpManager::sendCustomRequest(QNetworkAccessManager *manager,
 bool HttpManager::isNoError(QNetworkReply *reply) const
 {
     QNetworkReply::NetworkError replyError = reply->error();
-    int code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    int httpCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
 
-    return replyError == QNetworkReply::NoError && code == 200;
+    return replyError == QNetworkReply::NoError && httpCode == 200;
 }

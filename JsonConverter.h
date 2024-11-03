@@ -14,7 +14,7 @@ const QString MagicArrayKey("magic_array_key");
 
 QByteArray qVariantMapToJson(QVariantMap map);
 
-QVariantMap jsonToQVariantMap(const QByteArray &jsonData);
+QVariantMap jsonToVariantMap(const QByteArray &jsonData);
 
 QJsonObject parse(const QByteArray &data, QJsonParseError &parseError);
 
